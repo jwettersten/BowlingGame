@@ -1,7 +1,7 @@
 
 public class BowlingGame {
 	private int currentRoll = 0;
-	private int rolls[] = new int[21]; // 22 potential rolls
+	private int rolls[] = new int[21]; // 21 potential rolls - no more than 3 in 10th frame
 	
 	public void roll(int numPinsKnockedDown) {
 		rolls[currentRoll] = numPinsKnockedDown;
