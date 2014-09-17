@@ -6,6 +6,7 @@ import org.junit.Test;
 
 
 public class BowlingGameTest {
+	
 	private BowlingGame game;
 
 	@Before
@@ -16,60 +17,74 @@ public class BowlingGameTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-
-
+	
 	@Test
 	public void testGutterGame() {
-		rollGame(0, 20);
-	
-		assertEquals(game.score(), 0);
 		
+		int numPins = 0;
+		int numRolls = 20;
+		
+		rollFramesWithNumPins(numPins, numRolls);
+		
+		assertEquals(0, game.score());
+		
+	}
+
+	private void rollFramesWithNumPins(int numPins, int numRolls) {
+		for (int i = 0; i<numRolls; i++) {
+			game.roll(numPins);
+		}
 	}
 	
 	@Test
-	public void testOnePinPerRollGame() {
-		rollGame(1, 20);
+	public void testAllOnes() {
 		
-		assertEquals(20, game.score());	
+		int numPins = 1;
+		int numRolls = 20;
+		
+		rollFramesWithNumPins(numPins, numRolls);
+		
+		assertEquals(20, game.score());
+		
 	}
 	
 	@Test
 	public void testOneSpare() {
+		
 		rollSpare();
 		game.roll(3);
-		game.roll(4); // add in extra roll to test we are not evaluating this as a strike
-		rollGame(0, 16);
-		assertEquals(20, game.score());
+		rollFramesWithNumPins(0, 17);
+		
+		assertEquals(16, game.score());
+		
+	}
+
+	private void rollSpare() {
+		game.roll(5);
+		game.roll(5);
 	}
 	
 	@Test
-	public void testStrike() {
-		game.roll(10);
+	public void testOneStrike() {
+		
+		rollStrike();
 		game.roll(3);
-		game.roll(4);
-		rollGame(0, 17);
-		assertEquals(24, game.score());
+		game.roll(3);
+		rollFramesWithNumPins(0, 17);
+		
+		assertEquals(22, game.score());
+		
+	}
+	
+	private void rollStrike() {
+		game.roll(10);
 	}
 	
 	@Test
 	public void testPerfectGame() {
-		rollGame(10, 12);
+		rollFramesWithNumPins(10, 12);
+		
 		assertEquals(300, game.score());
-	}
-
-	private void rollSpare() {
-		game.roll(3);
-		game.roll(7);
-	}
-	
-	
-	public void rollGame(int pinsPerRoll, int times) {
-		
-		for (int i = 0; i < times; i++)
-		{
-			game.roll(pinsPerRoll);
-		}
-		
 	}
 
 }

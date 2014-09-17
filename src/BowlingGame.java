@@ -1,48 +1,59 @@
 
 public class BowlingGame {
+	private int currentRoll = 0;
+	private int rolls[] = new int[21]; // 22 potential rolls
 	
-	private int numberOfRolls = 0;
-	private int[] rolls = new int[22];
-	
-	public void roll(int pins) {
-		rolls[numberOfRolls] = pins;
+	public void roll(int numPinsKnockedDown) {
+		rolls[currentRoll] = numPinsKnockedDown;
 		
-		numberOfRolls++;
+		currentRoll++;
 	}
 	
 	public int score() {
-		int score = 0;
+		int currentScore = 0;
 		
-		int currentRoll = 0;
+		int frameIndex = 0;
+		
 		for (int frame = 0; frame < 10; frame++) {
 			
-			if (isStrike(currentRoll)) {
-				// apply next 2 rolls to currentRoll value
-				score += 10 + rolls[currentRoll + 1] + rolls[currentRoll + 2];
-				currentRoll++;
+			if (isSpare(frameIndex)) {
+				currentScore += 10 + spareBonus(frameIndex);
+				frameIndex += 2;
 				
-			} else if (isSpare(currentRoll)) {
-				// for every 2 positions within rolls[] - need to check for value of 10
-				// apply next role to value
-				score += 10 + rolls[currentRoll + 2];
-				currentRoll += 2;
+			} else if (isStrike(frameIndex)) {
+				currentScore += 10 + strikeBonus(frameIndex);
+				
+				frameIndex += 1;
 				
 			} else {
-				score += rolls[currentRoll] + rolls[currentRoll + 1];
-				currentRoll += 2;
+				currentScore += sumOfPins(frameIndex);
+				
+				frameIndex += 2;
 			}
+			
+			
 		}
 		
-		return score;
+		return currentScore;
 	}
 
-	private boolean isSpare(int currentRoll) {
-		return rolls[currentRoll] + rolls[currentRoll + 1] == 10;
+	private boolean isSpare(int frameIndex) {
+		return rolls[frameIndex] + rolls[frameIndex+1] == 10;
 	}
 	
-	private boolean isStrike(int currentRoll) {
-		return rolls[currentRoll] == 10;
+	private boolean isStrike(int frameIndex) {
+		return rolls[frameIndex] == 10;
 	}
 	
+	private int spareBonus(int frameIndex) {
+		return rolls[frameIndex+2];
+	}
 	
+	private int strikeBonus(int frameIndex) {
+		return rolls[frameIndex+1] + rolls[frameIndex+2];
+	}
+	
+	private int sumOfPins(int frameIndex) {
+		return rolls[frameIndex] + rolls[frameIndex+1];
+	}
 }
